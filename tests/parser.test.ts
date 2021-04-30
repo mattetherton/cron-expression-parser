@@ -8,6 +8,23 @@ describe('Parser', () => {
         })
     });
 
+    describe('When parsing ranges (-) expressions', () => {
+        it('Should return all values in range for expression 1-5', () => {
+            const result = parserExecutor('1-5', 'dayOfWeek');
+            expect(result).toEqual([1, 2, 3, 4, 5]);
+        });
+
+        it('Should throw an error for an invalid range expression', () => {
+            expect(() => parserExecutor('5-', 'dayOfWeek')).toThrowError();
+            expect(() => parserExecutor('-5', 'dayOfWeek')).toThrowError();
+            expect(() => parserExecutor('-', 'dayOfWeek')).toThrowError();
+        });
+
+        it('Should throw an error for a range out of bounds', () => {
+            expect(() => parserExecutor('5-50', 'dayOfWeek')).toThrowError();
+        });
+    });
+
     describe('When passing expression numbers as type string', () => {
         it('Should return a number', () => {
             const result = parserExecutor('0', 'hour');

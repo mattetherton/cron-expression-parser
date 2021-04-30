@@ -81,6 +81,25 @@ const parseRanges = (expression: string, expressionRange: CronExpressionRange) =
     return range(startAsNum, endAsNum + 1);
 };
 
+const parseLists = (expression: string, expressionRange: CronExpressionRange) => {
+    const values = expression.split(SpecialCharacters.list);
+    const validatedValues = [];
+    for (const value of values) {
+        const valueAsNum = Number(value);
+        if (!valueAsNum) {
+            throw `Range is not a number in expression: ${expression}`
+        }
+
+        if (valueAsNum < allowedRanges[expressionRange].min || valueAsNum > allowedRanges[expressionRange].max) {
+            throw `Invalid range for ${expressionRange}`
+        } 
+
+        validatedValues.push(valueAsNum)
+    }
+
+    return validatedValues;
+}
+
 const parserExecutor = (expression: string, expressionRange: CronExpressionRange): number | number[] => {
     if (expression === SpecialCharacters.any) {
         return parseAny(expression, expressionRange)
@@ -94,7 +113,9 @@ const parserExecutor = (expression: string, expressionRange: CronExpressionRange
         return parseRanges(expression, expressionRange)
     }
     
-
+    if (expression.includes(SpecialCharacters.list)) {
+        return parseLists(expression, expressionRange)
+    }
 
     return Number(expression); // no parsing required i.e 0 for hour.
 }

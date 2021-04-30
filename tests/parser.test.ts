@@ -43,6 +43,23 @@ describe('Parser', () => {
         });
     });
 
+    describe('When passing lists (,) expressions', () => {
+        it('Should return values in the list for expression 1,15', () => {
+            const result = parserExecutor('1,15', 'dayOfMonth');
+            expect(result).toEqual([1, 15]);
+        });
+
+        it('Should throw an error for an invalid list expression', () => {
+            expect(() => parserExecutor('5,', 'dayOfMonth')).toThrowError();
+            expect(() => parserExecutor(',5', 'dayOfMonth')).toThrowError();
+            expect(() => parserExecutor(',', 'dayOfMonth')).toThrowError();
+        });
+
+        it('Should throw an error for a range out of bounds', () => {
+            expect(() => parserExecutor('5,50', 'dayOfMonth')).toThrowError();
+        });
+    });
+
     describe('When passing expression numbers as type string', () => {
         it('Should return a number', () => {
             const result = parserExecutor('0', 'hour');

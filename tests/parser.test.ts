@@ -8,6 +8,24 @@ describe('Parser', () => {
         })
     });
 
+    describe('When passing interval (/) expressions', () => {
+        it('Should return all values in range for expression */15', () => {
+            const result = parserExecutor('*/15', 'minute');
+            expect(result).toEqual([0, 15, 30, 45])
+        });
+
+        it('Should return all values in range for expression 5-10/15', () => {
+            const result = parserExecutor('5-15/15', 'minute');
+            expect(result).toEqual([15])
+        });
+
+        it('Should throw an error for an invalid interval expression', () => {
+            expect(() => parserExecutor('/', 'minute')).toThrowError();
+            expect(() => parserExecutor('//', 'minute')).toThrowError();
+            expect(() => parserExecutor('*/*', 'minute')).toThrowError();
+        });
+    });
+
     describe('When parsing ranges (-) expressions', () => {
         it('Should return all values in range for expression 1-5', () => {
             const result = parserExecutor('1-5', 'dayOfWeek');
